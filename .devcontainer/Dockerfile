@@ -22,8 +22,9 @@ RUN groupadd --gid $USER_GID $USERNAME \
 RUN apt-get update && apt-get install -y \
     wget \ 
     build-essential \
-    python3.10 python-is-python3 python3-pip \
-    git
+    python3.10 python3-pip \
+    git && \
+    rm -rf /var/lib/apt/lists/*
 
 # Switch to regular user
 USER $USERNAME
@@ -32,14 +33,15 @@ WORKDIR /home/${USERNAME}
 # Install mxpy with rust and other tools
 RUN pip3 install --no-cache-dir https://github.com/multiversx/mx-sdk-py-cli/archive/refs/heads/devcontainer.zip
 
-RUN python -m multiversx_sdk_cli.cli deps install rust && \
-    python -m multiversx_sdk_cli.cli deps install wasm-opt && \
-    python -m multiversx_sdk_cli.cli deps install vmtools
+ENV MULTIVERSX=/home/${USERNAME}/multiversx-sdk
 
-ENV HOME=/home/${USERNAME}
-ENV PATH="${HOME}/multiversx-sdk:${HOME}/multiversx-sdk/vendor-rust/bin:${HOME}/multiversx-sdk/vmtools:${PATH}"
-ENV CARGO_HOME="${HOME}/multiversx-sdk/vendor-rust"
-ENV RUSTUP_HOME="${HOME}/multiversx-sdk/vendor-rust"
+RUN python3 -m multiversx_sdk_cli.cli deps install rust && rm -rf ${MULTIVERSX}/vendor-rust/registry/*
+RUN python3 -m multiversx_sdk_cli.cli deps install wasm-opt && rm ${MULTIVERSX}/*.tar.gz
+RUN python3 -m multiversx_sdk_cli.cli deps install vmtools && rm ${MULTIVERSX}/*.tar.gz && sudo rm -rf ${MULTIVERSX}/golang
 
-RUN rustup component add rustfmt && \
-    cargo install multiversx-sc-meta
+ENV PATH="${MULTIVERSX}/vendor-rust/bin:${MULTIVERSX}/vmtools:${PATH}"
+ENV CARGO_HOME="${MULTIVERSX}/vendor-rust"
+ENV RUSTUP_HOME="${MULTIVERSX}/vendor-rust"
+
+RUN rustup component add rustfmt && rm -rf ${MULTIVERSX}/vendor-rust/registry/*
+RUN cargo install multiversx-sc-meta && rm -rf ${MULTIVERSX}/vendor-rust/registry/*
