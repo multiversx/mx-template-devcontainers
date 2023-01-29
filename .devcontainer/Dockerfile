@@ -4,10 +4,6 @@ ARG USERNAME=developer
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-ARG VERSION_RUST="nightly-2022-10-16"
-ARG VERSION_BINARYEN="105-1"
-ARG VERSION_WABT="1.0.27-1"
-
 # Create the user
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
