@@ -1,0 +1,5 @@
+**/target/**
+**/output/**
+**/trace*.scen.json
+Cargo.lock
+!**/wasm*/Cargo.lock

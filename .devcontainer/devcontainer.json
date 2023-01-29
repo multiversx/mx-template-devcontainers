@@ -1,0 +1,36 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
+{
+	"name": "Existing Dockerfile",
+	"build": {
+		"context": ".",
+		"dockerfile": "./Dockerfile"
+	},
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+	// Uncomment the next line to run commands after the container is created.
+	// "postCreateCommand": "cat /etc/os-release",
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"Elrond.vscode-elrond-ide",
+				"rust-lang.rust-analyzer",
+				"vadimcn.vscode-lldb",
+				"dtsvet.vscode-wasm"
+			],
+			"settings": {
+				"launch": {
+					"version": "0.2.0",
+					"configurations": [],
+					"compounds": []
+				},
+				"terminal.integrated.env.linux": {},
+				"terminal.integrated.defaultProfile.linux": "bash"
+			}
+		}
+	},
+	"remoteUser": "developer"
+}

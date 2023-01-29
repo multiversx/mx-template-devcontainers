@@ -1,0 +1,8 @@
+{
+    "terminal.integrated.env.linux": {
+        "PATH": "${env:HOME}/multiversx-sdk/vendor-rust/bin:${env:HOME}/multiversx-sdk/vmtools:${env:PATH}",
+        "RUSTUP_HOME": "${env:HOME}/multiversx-sdk/vendor-rust",
+        "CARGO_HOME": "${env:HOME}/multiversx-sdk/vendor-rust"
+    },
+    "terminal.integrated.environmentChangesIndicator": "on"
+}
