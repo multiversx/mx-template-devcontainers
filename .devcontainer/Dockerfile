@@ -25,14 +25,21 @@ RUN apt-get update && apt-get install -y \
     python3.10 python-is-python3 python3-pip \
     git
 
-# Switch to regular user, install remaining dependencies
+# Switch to regular user
 USER $USERNAME
 WORKDIR /home/${USERNAME}
 
+# Install mxpy with rust and other tools
 RUN pip3 install --no-cache-dir https://github.com/multiversx/mx-sdk-py-cli/archive/refs/heads/devcontainer.zip
 
-RUN mkdir -p /home/${USERNAME}/multiversx-sdk
 RUN python -m multiversx_sdk_cli.cli deps install rust && \
     python -m multiversx_sdk_cli.cli deps install wasm-opt && \
     python -m multiversx_sdk_cli.cli deps install vmtools
 
+ENV HOME=/home/${USERNAME}
+ENV PATH="${HOME}/multiversx-sdk:${HOME}/multiversx-sdk/vendor-rust/bin:${HOME}/multiversx-sdk/vmtools:${PATH}"
+ENV CARGO_HOME="${HOME}/multiversx-sdk/vendor-rust"
+ENV RUSTUP_HOME="${HOME}/multiversx-sdk/vendor-rust"
+
+RUN rustup component add rustfmt && \
+    cargo install multiversx-sc-meta
