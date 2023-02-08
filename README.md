@@ -2,6 +2,14 @@
 
 Template repository: configuration for a devcontainer to be used in GitHub Codespaces, for Smart Contract development.
 
+## Local setup
+
+ - Clone this repository
+ - In VSCode, install the Dev Containers extension (from Microsoft)
+ - Launch the command `Dev Containers: Rebuild and Reopen in Container` (for first run), or `Dev Containers: Reopen in Container` (for subsequent runs).
+ 
+The local setup will be simplified once the template is published.
+
 ## Maintenance
 
 Skip this section if you are not a maintainer of this repository.
