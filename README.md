@@ -18,8 +18,12 @@ In Visual Studio code, the following MultiversX dev containers are available:
 
 Skip this section if you are not a maintainer of this repository.
 
-Before everything, please follow:
+Resources:
  - [Create a Dev Container](https://code.visualstudio.com/docs/devcontainers/create-dev-container)
+ - [devcontainers/templates](https://github.com/devcontainers/templates)
+ - [devcontainers/template-starter](https://github.com/devcontainers/template-starter)
+ - [Public index of templates](https://containers.dev/templates)
+
 
 ### Build images
 
