@@ -1,14 +1,12 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
 {
-	"name": "MultiversX: Smart Contracts Development",
-	"image": "registry.hub.docker.com/multiversx/template-vscode-devcontainer-for-sc:next",
+	"name": "MultiversX Smart Contracts",
+	"image": "multiversx/template-devcontainer-smart-contracts-rust:next",
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-	// Uncomment the next line to run commands after the container is created.
-	// "postCreateCommand": "cat /etc/os-release",
+	// Run commands after the container is created.
+	"postCreateCommand": "python3 ~/multiversx-sdk/devcontainer-resources/post_create_command.py",
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
