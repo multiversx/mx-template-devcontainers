@@ -5,8 +5,9 @@ Template repository: configuration for a devcontainer to be used in GitHub Codes
 ## For users of the templates
 
 Before everything, please follow the Visual Studio Code series on dev containers:
- - Mandatory: [Beginner's Series to Dev Containers](https://youtube.com/playlist?list=PLj6YeMhvp2S5G_X6ZyMc8gfXPMFPg3O31)
- - Optional: [Dev Container How To](https://youtube.com/playlist?list=PLj6YeMhvp2S6GjVyDHTPp8tLOR0xLGLYb)
+ - [Beginner's Series to Dev Containers](https://youtube.com/playlist?list=PLj6YeMhvp2S5G_X6ZyMc8gfXPMFPg3O31)
+ - [Dev Container How To](https://youtube.com/playlist?list=PLj6YeMhvp2S6GjVyDHTPp8tLOR0xLGLYb)
+ - [Developing inside a Container](https://code.visualstudio.com/docs/devcontainers/containers)
 
 In Visual Studio code, the following MultiversX dev containers are available:
  - TBD
@@ -16,6 +17,9 @@ In Visual Studio code, the following MultiversX dev containers are available:
 ## For maintainers of the templates
 
 Skip this section if you are not a maintainer of this repository.
+
+Before everything, please follow:
+ - [Create a Dev Container](https://code.visualstudio.com/docs/devcontainers/create-dev-container)
 
 ### Build images
 
