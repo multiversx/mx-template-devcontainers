@@ -1,6 +1,6 @@
 {
 	"name": "MultiversX Smart Contracts",
-	"image": "multiversx/template-devcontainer-smart-contracts-rust:next",
+	"image": "multiversx/devcontainer-smart-contracts-rust:next",
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
