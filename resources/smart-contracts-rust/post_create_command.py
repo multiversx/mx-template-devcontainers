@@ -24,21 +24,21 @@ def prepare_vscode_settings():
         vscode_launch_path.write_text(json.dumps({
             "version": "0.2.0",
             "configurations": []
-        }, indent=4))
+        }, indent=4) + "\n")
 
     if not vscode_settings_path.exists():
         vscode_settings_path.write_text(json.dumps({
-        }, indent=4))
+        }, indent=4) + "\n")
 
     if not vscode_tasks_path.exists():
         vscode_tasks_path.write_text(json.dumps({
             "version": "2.0.0",
             "tasks": []
-        }, indent=4))
+        }, indent=4) + "\n")
 
     if not workspace_path.exists():
         workspace_path.write_text(json.dumps({
-        }, indent=4))
+        }, indent=4) + "\n")
 
 
 def prepare_gitignore():

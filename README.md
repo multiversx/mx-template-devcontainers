@@ -10,8 +10,9 @@ Before everything, please follow the Visual Studio Code series on dev containers
  - [Developing inside a Container](https://code.visualstudio.com/docs/devcontainers/containers)
 
 In Visual Studio code, the following MultiversX dev containers are available:
- - TBD
- - TBD
+
+ - MultiversX: Smart Contracts Development (Rust)
+ - ...
 
 
 ## For maintainers of the templates
