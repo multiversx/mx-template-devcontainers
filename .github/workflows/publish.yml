@@ -5,16 +5,17 @@ on:
 
 permissions:
   contents: write
+  packages: write
 
 jobs:
   publish:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
       - name: "Publish"
         uses: devcontainers/action@v1.3.0
         with:
-          validate-only: true
           disable-repo-tagging: false
           publish-templates: true
           base-path-to-templates: "./src"
