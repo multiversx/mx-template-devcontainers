@@ -1,13 +1,9 @@
 name: "Update Documentation"
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   generate:
@@ -21,7 +17,7 @@ jobs:
           generate-docs: "true"
           base-path-to-templates: "./src"
 
-      - name: Create a PR for Documentation
+      - name: Create a branch for documentation
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -35,21 +31,13 @@ jobs:
 
           branch=automated-documentation-update-$GITHUB_RUN_ID
           git checkout -b $branch
-          message='Automated documentation update'
 
           # Add / update and commit
           git add */**/README.md
           git commit -m 'Automated documentation update' || export NO_UPDATES=true
 
-          # Push
+          # Push to temporary branch. Changes should be manually added to a separate branch (PR),
+          # since signed automated commits aren't easily supported on GitHub Actions (yet).
           if [ "$NO_UPDATES" != "true" ] ; then
               git push origin "$branch"
-              gh api \
-                --method POST \
-                -H "Accept: application/vnd.github+json" \
-                /repos/${GITHUB_REPOSITORY}/pulls \
-                -f title="$message" \
-              -f body="$message" \
-              -f head="$branch" \
-              -f base='main'
           fi
