@@ -11,7 +11,7 @@ Before everything, please follow the Visual Studio Code series on dev containers
 
 In Visual Studio code, the following MultiversX dev containers are available:
 
- - MultiversX: Smart Contracts Development (Rust)
+ - [MultiversX: Smart Contracts Development (Rust)](src/smart-contracts-rust)
  - ...
 
 
