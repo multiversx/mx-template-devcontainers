@@ -1,4 +1,4 @@
-name: Release devcontainer templates
+name: Publish templates
 
 on:
   workflow_dispatch:
@@ -19,6 +19,5 @@ jobs:
           disable-repo-tagging: false
           publish-templates: true
           base-path-to-templates: "./src"
-          generate-docs: "true"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
