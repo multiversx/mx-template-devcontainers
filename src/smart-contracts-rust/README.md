@@ -9,8 +9,6 @@ Develop smart contracts for MultiversX. Includes Rust, mxpy, VSCode extensions e
 |-----|-----|-----|-----|
 
 
-Test notes.
-
 
 ---
 
