@@ -1,5 +1,5 @@
 {
-    "id": "multiversx-smart-contracts-rust",
+    "id": "smart-contracts-rust",
     "version": "0.1.0",
     "name": "MultiversX: Smart Contracts Development (Rust)",
     "description": "Develop smart contracts for MultiversX. Includes Rust, mxpy, VSCode extensions etc.",
