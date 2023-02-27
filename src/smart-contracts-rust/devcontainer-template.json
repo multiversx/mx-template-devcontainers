@@ -5,7 +5,7 @@
     "description": "Develop smart contracts for MultiversX. Includes Rust, mxpy, VSCode extensions etc.",
     "documentationURL": "https://docs.multiversx.com",
     "publisher": "MultiversX",
-    "licenseURL": "https://github.com/multiversx/mx-template-vscode-devcontainer-for-sc/blob/main/LICENSE",
+    "licenseURL": "https://github.com/multiversx/mx-template-devcontainers/blob/main/LICENSE",
     "options": {},
     "platforms": []
 }
