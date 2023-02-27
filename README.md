@@ -1,6 +1,6 @@
-# mx-template-vscode-devcontainer-for-sc
+# mx-template-devcontainers
 
-Template repository: configuration for a devcontainer to be used in GitHub Codespaces, for Smart Contract development.
+MultiversX devcontainer templates to be used in **VSCode** or **GitHub Codespaces**, for Smart Contract development (others to come).
 
 ## For users of the templates
 
