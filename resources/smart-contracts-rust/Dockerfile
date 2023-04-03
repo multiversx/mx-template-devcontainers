@@ -4,6 +4,11 @@ ARG USERNAME=developer
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
+ARG VERSION_MXPY="v6.1.3"
+ARG VERSION_RUST="nightly-2022-10-16"
+ARG VERSION_WASM_OPT="version_105"
+ARG VERSION_VMTOOLS="v1.4.60"
+
 # Create the user
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
@@ -31,14 +36,14 @@ ENV MULTIVERSX=/home/${USERNAME}/multiversx-sdk
 RUN mkdir ${MULTIVERSX}
 
 # Install mxpy
-RUN pip3 install --no-cache-dir https://github.com/multiversx/mx-sdk-py-cli/archive/refs/heads/devcontainer.zip
+RUN pip3 install --no-cache-dir https://github.com/multiversx/mx-sdk-py-cli/archive/refs/tags/${VERSION_MXPY}.zip
 ENV PATH="${MULTIVERSX}:${PATH}"
 COPY "mxpy" "${MULTIVERSX}/mxpy"
 
 # Install rust and other tools
-RUN mxpy deps install rust && rm -rf ${MULTIVERSX}/vendor-rust/registry/*
-RUN mxpy deps install wasm-opt && rm ${MULTIVERSX}/*.tar.gz
-RUN mxpy deps install vmtools && rm ${MULTIVERSX}/*.tar.gz && sudo rm -rf ${MULTIVERSX}/golang
+RUN mxpy deps install rust --tag=${VERSION_RUST} && rm -rf ${MULTIVERSX}/vendor-rust/registry/*
+RUN mxpy deps install wasm-opt --tag=${VERSION_WASM_OPT} && rm ${MULTIVERSX}/*.tar.gz
+RUN mxpy deps install vmtools --tag=${VERSION_VMTOOLS} && rm ${MULTIVERSX}/*.tar.gz && sudo rm -rf ${MULTIVERSX}/golang
 
 ENV PATH="${MULTIVERSX}/vendor-rust/bin:${MULTIVERSX}/vmtools:${PATH}"
 ENV CARGO_HOME="${MULTIVERSX}/vendor-rust"
