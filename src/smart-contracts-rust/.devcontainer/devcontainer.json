@@ -2,7 +2,13 @@
 	"name": "MultiversX Smart Contracts",
 	"image": "multiversx/devcontainer-smart-contracts-rust:next",
 	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
+	"features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {
+			"version": "latest",
+			"moby": false,
+			"installDockerBuildx": false
+		}
+	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Run commands after the container is created.

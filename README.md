@@ -31,7 +31,7 @@ Resources:
 Build the Docker images for local testing:
 
 ```
-docker buildx build --output type=docker ./resources/smart-contracts-rust -t multiversx/devcontainer-smart-contracts-rust:next -f ./resources/smart-contracts-rust/Dockerfile
+docker build ./resources/smart-contracts-rust -t multiversx/devcontainer-smart-contracts-rust:next -f ./resources/smart-contracts-rust/Dockerfile
 ```
 
 ### Test the templates
@@ -49,7 +49,8 @@ Then, in VSCode, launch the command `Dev Containers: Rebuild and Reopen in Conta
 Build and publish the Docker images:
 
 ```
-docker buildx build --push --platform=linux/amd64 ./resources/smart-contracts-rust -t multiversx/devcontainer-smart-contracts-rust:next -f ./resources/smart-contracts-rust/Dockerfile
+docker build ./resources/smart-contracts-rust -t multiversx/devcontainer-smart-contracts-rust:next -f ./resources/smart-contracts-rust/Dockerfile
+docker push multiversx/devcontainer-smart-contracts-rust:next
 ```
 
 ### Publish templates
