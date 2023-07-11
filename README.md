@@ -14,7 +14,7 @@ In Visual Studio code, the following MultiversX dev containers are available:
  - [MultiversX: Smart Contracts Development (Rust)](src/smart-contracts-rust)
  - ...
 
-### Using the Docker images without VSCode
+## Using the Docker images without VSCode
 
 If you'd like to use the Docker image(s) to invoke `mxpy` commands and build contracts directly from a terminal, without VSCode's devcontainers feature, below are a few examples.
 
