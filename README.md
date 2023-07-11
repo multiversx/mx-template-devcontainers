@@ -46,13 +46,15 @@ Then, in VSCode, launch the command `Dev Containers: Rebuild and Reopen in Conta
 
 ### Publish images
 
-Build and publish the Docker images:
+Locally:
 
 ```
 docker build ./resources/smart-contracts-rust -t multiversx/devcontainer-smart-contracts-rust:next -f ./resources/smart-contracts-rust/Dockerfile
 docker push multiversx/devcontainer-smart-contracts-rust:next
 ```
 
+On Github, trigger the GitHub workflow(s) `publish-image-*.yml` to publish the image(s). Ideally, do this on the `main` branch.
+
 ### Publish templates
 
-Trigger the GitHub workflow `publish.yml` to publish the templates. Ideally, do this on the `main` branch.
+Trigger the GitHub workflow `publish-templates.yml` to publish the templates. Ideally, do this on the `main` branch.
