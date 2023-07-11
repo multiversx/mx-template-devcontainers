@@ -45,6 +45,9 @@ RUN mxpy deps install rust --tag=${VERSION_RUST} && rm -rf ${MULTIVERSX}/vendor-
 RUN mxpy deps install wasm-opt --tag=${VERSION_WASM_OPT} && rm ${MULTIVERSX}/*.tar.gz
 RUN mxpy deps install vmtools --tag=${VERSION_VMTOOLS} && rm ${MULTIVERSX}/*.tar.gz && sudo rm -rf ${MULTIVERSX}/golang
 
+# Install test wallets
+RUN mxpy deps install testwallets && rm ${MULTIVERSX}/*.tar.gz
+
 ENV PATH="${MULTIVERSX}/vendor-rust/bin:${MULTIVERSX}/vmtools:${PATH}"
 ENV CARGO_HOME="${MULTIVERSX}/vendor-rust"
 ENV RUSTUP_HOME="${MULTIVERSX}/vendor-rust"
