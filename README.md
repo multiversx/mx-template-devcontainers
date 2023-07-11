@@ -42,7 +42,7 @@ cp -R "src/smart-contracts-rust/.devcontainer" "/tmp/test-workspace" && \
 code "/tmp/test-workspace/"
 ```
 
-Then, in VSCode, launch the command `Dev Containers: Rebuild and Reopen in Container`, wait, then inspect the environment.
+Then, in VSCode, launch the command `Dev Containers: Rebuild and Reopen in Container`, wait, then inspect the environment (e.g. check version of `mxpy`, `rust`, build the sample smart contracts, verify output of rust-analyzer).
 
 ### Publish images
 

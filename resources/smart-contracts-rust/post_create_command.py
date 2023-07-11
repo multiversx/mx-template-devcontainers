@@ -57,7 +57,15 @@ Cargo.lock
 def add_examples_if_empty_workspace():
     subfolders = glob('*/')
     if len(subfolders) == 0:
-        subprocess.check_output(["mxpy", "contract", "new", "--template", "adder", "adder"])
+        sample_contracts = [
+            "adder",
+            "ping-pong-egld",
+            "lottery-esdt",
+            "crowdfunding-esdt",
+        ]
+
+        for contract in sample_contracts:
+            subprocess.check_output(["mxpy", "contract", "new", "--template", contract, contract])
 
 
 if __name__ == "__main__":

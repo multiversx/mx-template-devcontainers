@@ -1,4 +1,4 @@
-# Publishes devcontainer template artifacts. See them here: 
+# Publish devcontainer template artifacts. See them here: 
 # https://github.com/orgs/multiversx/packages?repo_name=mx-template-devcontainers
 # 
 # - Package "mx-template-devcontainers": not versioned, tagged as "latest"
