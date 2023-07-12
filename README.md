@@ -21,7 +21,7 @@ If you'd like to use the Docker image(s) to invoke `mxpy` commands and build con
 First, let's export some environment variables:
 
 ```
-export IMAGE=multiversx/devcontainer-smart-contracts-rust:next
+export IMAGE=multiversx/devcontainer-smart-contracts-rust:latest
 export DOCKER_USER=$(id -u):$(id -g)
 
 # Mandatory: run the container as the current user (should be 1000:1000), not as root.
@@ -126,7 +126,7 @@ Resources:
 Build the Docker images for local testing:
 
 ```
-docker build ./resources/smart-contracts-rust -t multiversx/devcontainer-smart-contracts-rust:next -f ./resources/smart-contracts-rust/Dockerfile
+docker build ./resources/smart-contracts-rust -t multiversx/devcontainer-smart-contracts-rust:latest -f ./resources/smart-contracts-rust/Dockerfile
 ```
 
 ### Test the templates
@@ -144,8 +144,8 @@ Then, in VSCode, launch the command `Dev Containers: Rebuild and Reopen in Conta
 Locally:
 
 ```
-docker build ./resources/smart-contracts-rust -t multiversx/devcontainer-smart-contracts-rust:next -f ./resources/smart-contracts-rust/Dockerfile
-docker push multiversx/devcontainer-smart-contracts-rust:next
+docker build ./resources/smart-contracts-rust -t multiversx/devcontainer-smart-contracts-rust:latest -f ./resources/smart-contracts-rust/Dockerfile
+docker push multiversx/devcontainer-smart-contracts-rust:latest
 ```
 
 On Github, trigger the GitHub workflow(s) `publish-image-*.yml` to publish the image(s). Ideally, do this on the `main` branch.
