@@ -1,15 +1,15 @@
 
 import json
-import subprocess
-from glob import glob
+import shutil
+import urllib.request
 from pathlib import Path
 
 
 def main():
     prepare_vscode_settings()
     prepare_gitignore()
-    add_examples_if_empty_workspace()
-
+    add_samples()
+    
 
 def prepare_vscode_settings():
     vscode_path = Path(".vscode")
@@ -54,18 +54,19 @@ Cargo.lock
 """)
 
 
-def add_examples_if_empty_workspace():
-    subfolders = glob('*/')
-    if len(subfolders) == 0:
-        sample_contracts = [
-            "adder",
-            "ping-pong-egld",
-            "lottery-esdt",
-            "crowdfunding-esdt",
-        ]
+def add_samples():
+    samples_folder = Path("samples")
+    archive_url = "https://github.com/multiversx/mx-contracts-rs/archive/refs/heads/main.zip"
+    download_path = Path("/tmp/archive.zip")
+    extract_path = Path("/tmp/extracted")
+    contracts_in_extract_path = Path("mx-contracts-rs-main/contracts")
 
-        for contract in sample_contracts:
-            subprocess.check_output(["mxpy", "contract", "new", "--template", contract, contract])
+    if samples_folder.exists():
+        return
+    
+    urllib.request.urlretrieve(archive_url, download_path)
+    shutil.unpack_archive(download_path, extract_path)
+    shutil.move(str(extract_path / contracts_in_extract_path), str(samples_folder))
 
 
 if __name__ == "__main__":
