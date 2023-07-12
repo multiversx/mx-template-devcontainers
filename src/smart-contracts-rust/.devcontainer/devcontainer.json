@@ -1,6 +1,6 @@
 {
 	"name": "MultiversX Smart Contracts",
-	"image": "multiversx/devcontainer-smart-contracts-rust:next",
+	"image": "multiversx/devcontainer-smart-contracts-rust:latest",
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {

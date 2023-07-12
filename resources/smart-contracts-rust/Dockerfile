@@ -4,9 +4,9 @@ ARG USERNAME=developer
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-ARG VERSION_MXPY="v6.1.3"
-ARG VERSION_RUST="nightly-2022-10-16"
-ARG VERSION_WASM_OPT="version_105"
+ARG VERSION_MXPY="v7.0.0"
+ARG VERSION_RUST="nightly-2023-04-24"
+ARG VERSION_WASM_OPT="version_112"
 ARG VERSION_VMTOOLS="v1.4.60"
 
 # Create the user
@@ -44,6 +44,9 @@ COPY "mxpy" "${MULTIVERSX}/mxpy"
 RUN mxpy deps install rust --tag=${VERSION_RUST} && rm -rf ${MULTIVERSX}/vendor-rust/registry/*
 RUN mxpy deps install wasm-opt --tag=${VERSION_WASM_OPT} && rm ${MULTIVERSX}/*.tar.gz
 RUN mxpy deps install vmtools --tag=${VERSION_VMTOOLS} && rm ${MULTIVERSX}/*.tar.gz && sudo rm -rf ${MULTIVERSX}/golang
+
+# Install test wallets
+RUN mxpy deps install testwallets && rm ${MULTIVERSX}/*.tar.gz
 
 ENV PATH="${MULTIVERSX}/vendor-rust/bin:${MULTIVERSX}/vmtools:${PATH}"
 ENV CARGO_HOME="${MULTIVERSX}/vendor-rust"
