@@ -4,8 +4,8 @@ ARG USERNAME=developer
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-ARG VERSION_MXPY="v7.2.1"
-ARG VERSION_RUST="nightly-2023-04-24"
+ARG VERSION_MXPY="v8.1.0"
+ARG VERSION_RUST="nightly-2023-05-26"
 ARG VERSION_WASM_OPT="version_112"
 ARG VERSION_VMTOOLS="v1.4.60"
 
@@ -24,7 +24,9 @@ RUN apt-get update && apt-get install -y \
     wget \ 
     build-essential \
     python3.10 python3-pip \
-    git && \
+    git \
+    pkg-config \
+    libssl-dev && \
     rm -rf /var/lib/apt/lists/*
 
 # Switch to regular user
@@ -53,7 +55,6 @@ ENV CARGO_HOME="${MULTIVERSX}/vendor-rust"
 ENV RUSTUP_HOME="${MULTIVERSX}/vendor-rust"
 
 RUN rustup component add rustfmt && rm -rf ${MULTIVERSX}/vendor-rust/registry/*
-RUN cargo install multiversx-sc-meta && rm -rf ${MULTIVERSX}/vendor-rust/registry/*
 
 # This command will be executed once the devcontainer is created
 COPY "post_create_command.py" "${MULTIVERSX}/devcontainer-resources/"
