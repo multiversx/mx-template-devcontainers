@@ -34,7 +34,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: ./resources/smart-contracts-rust
           push: true
@@ -43,7 +43,7 @@ jobs:
           tags: multiversx/devcontainer-smart-contracts-rust:${{ env.VERSION }}
 
       - name: Push to "latest"
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: ./resources/smart-contracts-rust
           push: ${{ inputs.latest }}

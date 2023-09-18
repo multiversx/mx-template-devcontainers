@@ -27,7 +27,7 @@ export DOCKER_USER=$(id -u):$(id -g)
 # Mandatory: run the container as the current user (should be 1000:1000), not as root.
 # Suggestion: use a stateless container; remove it after use (--rm).
 # Suggestion: map the current directory to "/data" in the container.
-export RUN="docker run --user=${DOCKER_USER} --rm -it --volume $(pwd):/data"
+export RUN="docker run --network=host --user=${DOCKER_USER} --rm -it --volume $(pwd):/data"
 ```
 
 Run the container and do a quick inspection:
@@ -36,6 +36,7 @@ Run the container and do a quick inspection:
 ${RUN} ${IMAGE} whoami
 ${RUN} ${IMAGE} mxpy --version
 ${RUN} ${IMAGE} mxpy deps check rust
+${RUN} ${IMAGE} sc-meta --version
 ```
 
 Clone `mx-contracts-rs` locally, then build a few contracts within the container:
@@ -43,24 +44,24 @@ Clone `mx-contracts-rs` locally, then build a few contracts within the container
 ```
 git clone https://github.com/multiversx/mx-contracts-rs.git  --single-branch --depth=1
 
-${RUN} ${IMAGE} mxpy contract build /data/mx-contracts-rs/contracts/adder
+${RUN} ${IMAGE} mxpy contract build --path /data/mx-contracts-rs/contracts/adder
 stat ./mx-contracts-rs/contracts/adder/output/adder.wasm
 
-${RUN} ${IMAGE} mxpy contract build /data/mx-contracts-rs/contracts/ping-pong-egld
+${RUN} ${IMAGE} mxpy contract build --path /data/mx-contracts-rs/contracts/ping-pong-egld
 stat ./mx-contracts-rs/contracts/ping-pong-egld/output/ping-pong-egld.wasm
 ```
 
-Deploy a previously-built smart contract on Testnet:
+Deploy a previously-built smart contract on Devnet:
 
 ```
 ${RUN} ${IMAGE} mxpy contract deploy \
     --bytecode /data/mx-contracts-rs/contracts/adder/output/adder.wasm \
     --arguments 0 \
-    --pem /home/developer/multiversx-sdk/testwallets/latest/users/frank.pem \
+    --pem /home/developer/multiversx-sdk/testwallets/latest/users/alice.pem \
     --recall-nonce \
     --gas-limit 5000000 \
-    --chain T \
-    --proxy https://testnet-gateway.multiversx.com \
+    --chain D \
+    --proxy https://devnet2-gateway.multiversx.com \
     --send
 ```
 
@@ -68,14 +69,14 @@ Call a function of a previously-deployed smart contract:
 
 ```
 ${RUN} ${IMAGE} mxpy contract call \
-    erd1qqqqqqqqqqqqqpgq5v3ra8mxjkv6g2pues9tdkkzwmtm9fdht7asp8wtnr \
+    erd1qqqqqqqqqqqqqpgqfzydqmdw7m2vazsp6u5p95yxz76t2p9rd8ss0zp9ts \
     --function "add" \
     --arguments 42 \
-    --pem /home/developer/multiversx-sdk/testwallets/latest/users/frank.pem \
+    --pem /home/developer/multiversx-sdk/testwallets/latest/users/alice.pem \
     --recall-nonce \
     --gas-limit 5000000 \
-    --chain T \
-    --proxy https://testnet-gateway.multiversx.com \
+    --chain D \
+    --proxy https://devnet2-gateway.multiversx.com \
     --send
 ```
 
@@ -83,9 +84,9 @@ Query a smart contract:
 
 ```
 ${RUN} ${IMAGE} mxpy contract query \
-    erd1qqqqqqqqqqqqqpgq5v3ra8mxjkv6g2pues9tdkkzwmtm9fdht7asp8wtnr \
+    erd1qqqqqqqqqqqqqpgqfzydqmdw7m2vazsp6u5p95yxz76t2p9rd8ss0zp9ts \
     --function "getSum" \
-    --proxy https://testnet-gateway.multiversx.com
+    --proxy https://devnet2-gateway.multiversx.com
 ```
 
 Setup a localnet (make sure to set the `--workdir`, as well), then inspect the generated files (on the mapped volume):
@@ -126,7 +127,7 @@ Resources:
 Build the Docker images for local testing:
 
 ```
-docker build ./resources/smart-contracts-rust -t multiversx/devcontainer-smart-contracts-rust:latest -f ./resources/smart-contracts-rust/Dockerfile
+docker build --network=host ./resources/smart-contracts-rust -t multiversx/devcontainer-smart-contracts-rust:latest -f ./resources/smart-contracts-rust/Dockerfile
 ```
 
 ### Test the templates
@@ -137,14 +138,14 @@ cp -R "src/smart-contracts-rust/.devcontainer" "/tmp/test-workspace" && \
 code "/tmp/test-workspace/"
 ```
 
-Then, in VSCode, launch the command `Dev Containers: Rebuild and Reopen in Container`, wait, then inspect the environment (e.g. check version of `mxpy`, `rust`, build the sample smart contracts, verify output of rust-analyzer).
+Then, in VSCode, launch the command `Dev Containers: Rebuild and Reopen in Container`, wait, then inspect the environment. For example, check version of `mxpy`, `rust`, `sc-meta`, build the sample smart contracts, verify output of `rust-analyzer`.
 
 ### Publish images
 
 Locally:
 
 ```
-docker build ./resources/smart-contracts-rust -t multiversx/devcontainer-smart-contracts-rust:latest -f ./resources/smart-contracts-rust/Dockerfile
+docker build --network=host ./resources/smart-contracts-rust -t multiversx/devcontainer-smart-contracts-rust:latest -f ./resources/smart-contracts-rust/Dockerfile
 docker push multiversx/devcontainer-smart-contracts-rust:latest
 ```
 
