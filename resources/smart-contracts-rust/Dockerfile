@@ -6,7 +6,8 @@ ARG USER_GID=$USER_UID
 
 ARG VERSION_MXPY="v9.4.0"
 ARG VERSION_RUST="nightly-2023-12-11"
-ARG VERSION_WASM_OPT="version_112"
+ARG VERSION_SC_META="v0.47.1"
+ARG VERSION_WASM_OPT="0.112.0"
 ARG VERSION_VMTOOLS="v1.5.24"
 
 # Create the user
@@ -43,16 +44,17 @@ ENV PATH="${MULTIVERSX}:${PATH}"
 COPY "mxpy" "${MULTIVERSX}/mxpy"
 
 # Install rust and other tools
-RUN mxpy deps install rust --tag=${VERSION_RUST} && rm -rf ${MULTIVERSX}/vendor-rust/registry/*
-RUN mxpy deps install wasm-opt --tag=${VERSION_WASM_OPT} && rm ${MULTIVERSX}/*.tar.gz
-RUN mxpy deps install vmtools --tag=${VERSION_VMTOOLS} && rm ${MULTIVERSX}/*.tar.gz && sudo rm -rf ${MULTIVERSX}/golang
+RUN mxpy config set "dependencies.rust.tag" ${VERSION_RUST} && \
+    mxpy config set "dependencies.sc-meta.tag" ${VERSION_SC_META} && \
+    mxpy config set "dependencies.wasm-opt.tag" ${VERSION_WASM_OPT} && \
+    mxpy config set "dependencies.vmtools.tag" ${VERSION_VMTOOLS}
+RUN mxpy deps install rust && rm -rf ${MULTIVERSX}/vendor-rust/registry/*
+RUN mxpy deps install vmtools && rm ${MULTIVERSX}/*.tar.gz && sudo rm -rf ${MULTIVERSX}/golang
 
 # Install test wallets
 RUN mxpy deps install testwallets && rm ${MULTIVERSX}/*.tar.gz
 
-ENV PATH="${MULTIVERSX}/vendor-rust/bin:${MULTIVERSX}/vmtools:${PATH}"
-ENV CARGO_HOME="${MULTIVERSX}/vendor-rust"
-ENV RUSTUP_HOME="${MULTIVERSX}/vendor-rust"
+ENV PATH="${MULTIVERSX}/vmtools:${PATH}"
 
 RUN rustup component add rustfmt && rm -rf ${MULTIVERSX}/vendor-rust/registry/*
 
