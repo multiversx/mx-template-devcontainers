@@ -35,7 +35,8 @@ Run the container and do a quick inspection:
 ```
 ${RUN} ${IMAGE} whoami
 ${RUN} ${IMAGE} mxpy --version
-${RUN} ${IMAGE} mxpy deps check rust
+${RUN} ${IMAGE} cargo --version
+${RUN} ${IMAGE} rustc --version
 ${RUN} ${IMAGE} sc-meta --version
 ```
 
@@ -44,10 +45,10 @@ Clone `mx-contracts-rs` locally, then build a few contracts within the container
 ```
 git clone https://github.com/multiversx/mx-contracts-rs.git  --single-branch --depth=1
 
-${RUN} ${IMAGE} mxpy contract build --path /data/mx-contracts-rs/contracts/adder
+${RUN} ${IMAGE} sc-meta all build --path /data/mx-contracts-rs/contracts/adder
 stat ./mx-contracts-rs/contracts/adder/output/adder.wasm
 
-${RUN} ${IMAGE} mxpy contract build --path /data/mx-contracts-rs/contracts/ping-pong-egld
+${RUN} ${IMAGE} sc-meta all build --path /data/mx-contracts-rs/contracts/ping-pong-egld
 stat ./mx-contracts-rs/contracts/ping-pong-egld/output/ping-pong-egld.wasm
 ```
 
@@ -61,7 +62,7 @@ ${RUN} ${IMAGE} mxpy contract deploy \
     --recall-nonce \
     --gas-limit 5000000 \
     --chain D \
-    --proxy https://devnet2-gateway.multiversx.com \
+    --proxy https://devnet-gateway.multiversx.com \
     --send
 ```
 
@@ -69,14 +70,14 @@ Call a function of a previously-deployed smart contract:
 
 ```
 ${RUN} ${IMAGE} mxpy contract call \
-    erd1qqqqqqqqqqqqqpgqfzydqmdw7m2vazsp6u5p95yxz76t2p9rd8ss0zp9ts \
+    erd1qqqqqqqqqqqqqpgqr3clh6ghpww5fc4uhwh2amsseuvecswzd8ssxu68s3 \
     --function "add" \
     --arguments 42 \
     --pem /home/developer/multiversx-sdk/testwallets/latest/users/alice.pem \
     --recall-nonce \
     --gas-limit 5000000 \
     --chain D \
-    --proxy https://devnet2-gateway.multiversx.com \
+    --proxy https://devnet-gateway.multiversx.com \
     --send
 ```
 
@@ -84,9 +85,9 @@ Query a smart contract:
 
 ```
 ${RUN} ${IMAGE} mxpy contract query \
-    erd1qqqqqqqqqqqqqpgqfzydqmdw7m2vazsp6u5p95yxz76t2p9rd8ss0zp9ts \
+    erd1qqqqqqqqqqqqqpgqr3clh6ghpww5fc4uhwh2amsseuvecswzd8ssxu68s3 \
     --function "getSum" \
-    --proxy https://devnet2-gateway.multiversx.com
+    --proxy https://devnet-gateway.multiversx.com
 ```
 
 Setup a localnet (make sure to set the `--workdir`, as well), then inspect the generated files (on the mapped volume):

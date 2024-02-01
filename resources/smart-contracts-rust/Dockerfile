@@ -4,10 +4,11 @@ ARG USERNAME=developer
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-ARG VERSION_MXPY="v8.1.0"
-ARG VERSION_RUST="nightly-2023-05-26"
-ARG VERSION_WASM_OPT="version_112"
-ARG VERSION_VMTOOLS="v1.4.60"
+ARG VERSION_MXPY="v9.4.1"
+ARG VERSION_RUST="nightly-2023-12-11"
+ARG VERSION_SC_META="0.47.1"
+ARG VERSION_WASM_OPT="0.112.0"
+ARG VERSION_VMTOOLS="v1.5.24"
 
 # Create the user
 RUN groupadd --gid $USER_GID $USERNAME \
@@ -23,7 +24,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
 RUN apt-get update && apt-get install -y \
     wget \ 
     build-essential \
-    python3.10 python3-pip \
+    python3.10 python3-pip python3.10-venv \
     git \
     pkg-config \
     libssl-dev && \
@@ -33,28 +34,29 @@ RUN apt-get update && apt-get install -y \
 USER $USERNAME
 WORKDIR /home/${USERNAME}
 
-# Create "~/multiversx-sdk"
-ENV MULTIVERSX=/home/${USERNAME}/multiversx-sdk
-RUN mkdir ${MULTIVERSX}
+ENV MULTIVERSX="/home/${USERNAME}/multiversx-sdk"
+ENV PATH="/home/${USERNAME}/.local/bin:${PATH}"
+ENV PATH="/home/${USERNAME}/.cargo/bin:${PATH}"
+ENV PATH="${MULTIVERSX}/vmtools:${PATH}"
+
+# Install pipx
+RUN python3 -m pip install --no-cache-dir --user pipx
 
 # Install mxpy
-RUN pip3 install --no-cache-dir https://github.com/multiversx/mx-sdk-py-cli/archive/refs/tags/${VERSION_MXPY}.zip
-ENV PATH="${MULTIVERSX}:${PATH}"
-COPY "mxpy" "${MULTIVERSX}/mxpy"
+RUN pipx install multiversx-sdk-cli==${VERSION_MXPY}
 
 # Install rust and other tools
-RUN mxpy deps install rust --tag=${VERSION_RUST} && rm -rf ${MULTIVERSX}/vendor-rust/registry/*
-RUN mxpy deps install wasm-opt --tag=${VERSION_WASM_OPT} && rm ${MULTIVERSX}/*.tar.gz
-RUN mxpy deps install vmtools --tag=${VERSION_VMTOOLS} && rm ${MULTIVERSX}/*.tar.gz && sudo rm -rf ${MULTIVERSX}/golang
+RUN mxpy config set "dependencies.rust.tag" ${VERSION_RUST} && \
+    mxpy config set "dependencies.sc-meta.tag" ${VERSION_SC_META} && \
+    mxpy config set "dependencies.wasm-opt.tag" ${VERSION_WASM_OPT} && \
+    mxpy config set "dependencies.vmtools.tag" ${VERSION_VMTOOLS}
+RUN mxpy deps install rust && rm -rf /home/${USERNAME}/.cargo/registry/* && rm -rf /home/${USERNAME}/.cargo/git/*
+RUN mxpy deps install vmtools && rm ${MULTIVERSX}/*.tar.gz && sudo rm -rf ${MULTIVERSX}/golang
 
 # Install test wallets
 RUN mxpy deps install testwallets && rm ${MULTIVERSX}/*.tar.gz
 
-ENV PATH="${MULTIVERSX}/vendor-rust/bin:${MULTIVERSX}/vmtools:${PATH}"
-ENV CARGO_HOME="${MULTIVERSX}/vendor-rust"
-ENV RUSTUP_HOME="${MULTIVERSX}/vendor-rust"
-
-RUN rustup component add rustfmt && rm -rf ${MULTIVERSX}/vendor-rust/registry/*
+RUN rustup component add rustfmt && rm -rf /home/${USERNAME}/.cargo/registry/* && rm -rf /home/${USERNAME}/.cargo/git/*
 
 # This command will be executed once the devcontainer is created
 COPY "post_create_command.py" "${MULTIVERSX}/devcontainer-resources/"
