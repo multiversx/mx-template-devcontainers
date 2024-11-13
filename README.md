@@ -38,6 +38,7 @@ ${RUN} ${IMAGE} mxpy --version
 ${RUN} ${IMAGE} cargo --version
 ${RUN} ${IMAGE} rustc --version
 ${RUN} ${IMAGE} sc-meta --version
+${RUN} ${IMAGE} wasm-opt --version
 ```
 
 Clone `mx-contracts-rs` locally, then build a few contracts within the container:

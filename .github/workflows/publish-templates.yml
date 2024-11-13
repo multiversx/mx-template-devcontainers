@@ -17,10 +17,10 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: "Publish"
-        uses: devcontainers/action@v1.3.0
+        uses: devcontainers/action@v1.4.3
         with:
           disable-repo-tagging: false
           publish-templates: true

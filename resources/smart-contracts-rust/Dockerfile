@@ -4,11 +4,10 @@ ARG USERNAME=developer
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-ARG VERSION_MXPY="v9.4.1"
-ARG VERSION_RUST="nightly-2023-12-11"
-ARG VERSION_SC_META="0.47.1"
-ARG VERSION_WASM_OPT="0.112.0"
-ARG VERSION_VMTOOLS="v1.5.24"
+ARG VERSION_MXPY="v9.8.1"
+ARG VERSION_RUST="1.82.0"
+ARG VERSION_SC_META="0.54.0"
+ARG VERSION_WASM_OPT="0.116.1"
 
 # Create the user
 RUN groupadd --gid $USER_GID $USERNAME \
@@ -37,7 +36,6 @@ WORKDIR /home/${USERNAME}
 ENV MULTIVERSX="/home/${USERNAME}/multiversx-sdk"
 ENV PATH="/home/${USERNAME}/.local/bin:${PATH}"
 ENV PATH="/home/${USERNAME}/.cargo/bin:${PATH}"
-ENV PATH="${MULTIVERSX}/vmtools:${PATH}"
 
 # Install pipx
 RUN python3 -m pip install --no-cache-dir --user pipx
@@ -47,11 +45,9 @@ RUN pipx install multiversx-sdk-cli==${VERSION_MXPY}
 
 # Install rust and other tools
 RUN mxpy config set "dependencies.rust.tag" ${VERSION_RUST} && \
-    mxpy config set "dependencies.sc-meta.tag" ${VERSION_SC_META} && \
-    mxpy config set "dependencies.wasm-opt.tag" ${VERSION_WASM_OPT} && \
-    mxpy config set "dependencies.vmtools.tag" ${VERSION_VMTOOLS}
+    mxpy config set "dependencies.sc-meta.tag" ${VERSION_SC_META}
 RUN mxpy deps install rust && rm -rf /home/${USERNAME}/.cargo/registry/* && rm -rf /home/${USERNAME}/.cargo/git/*
-RUN mxpy deps install vmtools && rm ${MULTIVERSX}/*.tar.gz && sudo rm -rf ${MULTIVERSX}/golang
+RUN cargo install wasm-opt --version ${VERSION_WASM_OPT}
 
 # Install test wallets
 RUN mxpy deps install testwallets && rm ${MULTIVERSX}/*.tar.gz
