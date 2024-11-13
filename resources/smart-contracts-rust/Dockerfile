@@ -7,7 +7,7 @@ ARG USER_GID=$USER_UID
 ARG VERSION_MXPY="v9.8.1"
 ARG VERSION_RUST="1.82.0"
 ARG VERSION_SC_META="0.54.0"
-ARG VERSION_WASM_OPT="0.112.0"
+ARG VERSION_WASM_OPT="0.116.1"
 
 # Create the user
 RUN groupadd --gid $USER_GID $USERNAME \
@@ -45,9 +45,9 @@ RUN pipx install multiversx-sdk-cli==${VERSION_MXPY}
 
 # Install rust and other tools
 RUN mxpy config set "dependencies.rust.tag" ${VERSION_RUST} && \
-    mxpy config set "dependencies.sc-meta.tag" ${VERSION_SC_META} && \
-    mxpy config set "dependencies.wasm-opt.tag" ${VERSION_WASM_OPT}
+    mxpy config set "dependencies.sc-meta.tag" ${VERSION_SC_META}
 RUN mxpy deps install rust && rm -rf /home/${USERNAME}/.cargo/registry/* && rm -rf /home/${USERNAME}/.cargo/git/*
+RUN cargo install wasm-opt --version ${VERSION_WASM_OPT}
 
 # Install test wallets
 RUN mxpy deps install testwallets && rm ${MULTIVERSX}/*.tar.gz
