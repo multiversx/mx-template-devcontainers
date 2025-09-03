@@ -4,9 +4,9 @@ ARG USERNAME=developer
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-ARG VERSION_MXPY="v9.8.1"
-ARG VERSION_RUST="1.82.0"
-ARG VERSION_SC_META="0.54.0"
+ARG VERSION_MXPY="v11.1.1"
+ARG VERSION_RUST="1.86.0"
+ARG VERSION_SC_META="0.59.0"
 ARG VERSION_WASM_OPT="0.116.1"
 
 # Create the user
@@ -43,11 +43,23 @@ RUN python3 -m pip install --no-cache-dir --user pipx
 # Install mxpy
 RUN pipx install multiversx-sdk-cli==${VERSION_MXPY}
 
-# Install rust and other tools
-RUN mxpy config set "dependencies.rust.tag" ${VERSION_RUST} && \
-    mxpy config set "dependencies.sc-meta.tag" ${VERSION_SC_META}
-RUN mxpy deps install rust && rm -rf /home/${USERNAME}/.cargo/registry/* && rm -rf /home/${USERNAME}/.cargo/git/*
-RUN cargo install wasm-opt --version ${VERSION_WASM_OPT}
+# Install rust
+RUN wget -O rustup.sh https://sh.rustup.rs && \
+    chmod +x rustup.sh && \
+    CARGO_HOME=/home/${USERNAME}/.cargo RUSTUP_HOME=/home/${USERNAME}/.rustup ./rustup.sh --verbose --default-toolchain ${VERSION_RUST} --profile minimal -y && \
+    rm rustup.sh
+
+# Install sc-meta tool
+RUN CARGO_HOME=/home/${USERNAME}/.cargo RUSTUP_HOME=/home/${USERNAME}/.rustup PATH="/home/${USERNAME}/.cargo/bin:${PATH}" \
+    cargo install multiversx-sc-meta --version ${VERSION_SC_META} --locked
+
+# Install wasm32 target
+RUN CARGO_HOME=/home/${USERNAME}/.cargo RUSTUP_HOME=/home/${USERNAME}/.rustup PATH="/home/${USERNAME}/.cargo/bin:${PATH}" \
+    sc-meta install wasm32
+
+# Install wasm-opt
+RUN CARGO_HOME=/home/${USERNAME}/.cargo RUSTUP_HOME=/home/${USERNAME}/.rustup PATH="/home/${USERNAME}/.cargo/bin:${PATH}" \
+    cargo install wasm-opt --version ${VERSION_WASM_OPT} --locked
 
 # Install test wallets
 RUN mxpy deps install testwallets && rm ${MULTIVERSX}/*.tar.gz
