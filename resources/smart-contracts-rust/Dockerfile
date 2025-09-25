@@ -6,8 +6,7 @@ ARG USER_GID=$USER_UID
 
 ARG VERSION_MXPY="v11.1.1"
 ARG VERSION_RUST="1.86.0"
-ARG VERSION_SC_META="0.59.0"
-ARG VERSION_WASM_OPT="0.116.1"
+ARG VERSION_SC_META="0.62.0"
 
 # Create the user
 RUN groupadd --gid $USER_GID $USERNAME \
@@ -49,17 +48,12 @@ RUN wget -O rustup.sh https://sh.rustup.rs && \
     CARGO_HOME=/home/${USERNAME}/.cargo RUSTUP_HOME=/home/${USERNAME}/.rustup ./rustup.sh --verbose --default-toolchain ${VERSION_RUST} --profile minimal -y && \
     rm rustup.sh
 
-# Install sc-meta tool
+# Install sc-meta tools
 RUN CARGO_HOME=/home/${USERNAME}/.cargo RUSTUP_HOME=/home/${USERNAME}/.rustup PATH="/home/${USERNAME}/.cargo/bin:${PATH}" \
     cargo install multiversx-sc-meta --version ${VERSION_SC_META} --locked
 
-# Install wasm32 target
 RUN CARGO_HOME=/home/${USERNAME}/.cargo RUSTUP_HOME=/home/${USERNAME}/.rustup PATH="/home/${USERNAME}/.cargo/bin:${PATH}" \
-    sc-meta install wasm32
-
-# Install wasm-opt
-RUN CARGO_HOME=/home/${USERNAME}/.cargo RUSTUP_HOME=/home/${USERNAME}/.rustup PATH="/home/${USERNAME}/.cargo/bin:${PATH}" \
-    cargo install wasm-opt --version ${VERSION_WASM_OPT} --locked
+    sc-meta install all
 
 # Install test wallets
 RUN mxpy deps install testwallets && rm ${MULTIVERSX}/*.tar.gz
