@@ -1,0 +1,119 @@
+env:
+  IMAGE_NAME: devcontainer-smart-contracts-rust
+  REGISTRY_HOSTNAME: multiversx
+
+name: Publish Docker image - rust (release)
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Simulate release version (e.g., v0.4.2)'
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+      tags-json: ${{ steps.meta.outputs.json }}
+      labels: ${{ steps.meta.outputs.labels }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Compute version from template (release)
+        id: version
+        if: github.event_name == 'release'
+        run: |
+          VERSION=v$(jq -r '.["version"]' ./src/smart-contracts-rust/devcontainer-template.json)
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Extract metadata
+        id: meta
+        env:
+          VERSION: ${{ steps.version.outputs.VERSION }}
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_HOSTNAME }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+            ${{ (github.event_name == 'release' && format('type=raw,value={0}', env.VERSION)) || (github.event.inputs.version != '' && format('type=raw,value={0}', github.event.inputs.version)) || '' }}
+
+  build:
+    strategy:
+      matrix:
+        arch:
+          - { runner: ubuntu-latest, platform: linux/amd64, platform_tag: linux_amd64 }
+          - { runner: ubuntu-24.04-arm, platform: linux/arm64, platform_tag: linux_arm64 }
+    runs-on: ${{ matrix.arch.runner }}
+    needs: prepare
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: ./resources/smart-contracts-rust
+          file: ./resources/smart-contracts-rust/Dockerfile
+          platforms: ${{ matrix.arch.platform }}
+          labels: ${{ needs.prepare.outputs.labels }}
+          outputs: type=image,name=${{ env.REGISTRY_HOSTNAME }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ matrix.arch.platform_tag }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  manifest:
+    runs-on: ubuntu-latest
+    needs: [prepare, build]
+
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Create and push manifest
+        working-directory: /tmp/digests
+        env:
+          TAGS_JSON: ${{ needs.prepare.outputs.tags-json }}
+        run: |
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$TAGS_JSON") \
+            $(printf '${{ env.REGISTRY_HOSTNAME }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
