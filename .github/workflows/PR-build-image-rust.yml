@@ -1,0 +1,30 @@
+env:
+  IMAGE_NAME: devcontainer-smart-contracts-rust
+  REGISTRY_HOSTNAME: multiversx
+
+name: Build Docker image - rust (PR)
+
+on:
+  pull_request:
+
+jobs:
+  build-docker-image:
+    strategy:
+      matrix:
+        runner: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6 
+        with:
+          context: ./resources/smart-contracts-rust
+          push: false
+          file: ./resources/smart-contracts-rust/Dockerfile
+          tags: ${{ env.REGISTRY_HOSTNAME }}/${{ env.IMAGE_NAME }}:pr-test
