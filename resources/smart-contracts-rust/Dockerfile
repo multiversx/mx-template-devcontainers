@@ -1,64 +1,59 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
-ARG USERNAME=developer
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
+ARG USERNAME=ubuntu
+ARG VERSION_MXPY="11.3.1"
+ARG VERSION_RUST="1.90.0"
+ARG VERSION_SC_META="0.64.2"
 
-ARG VERSION_MXPY="v11.1.1"
-ARG VERSION_RUST="1.86.0"
-ARG VERSION_SC_META="0.62.0"
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Create the user
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    #
-    # [Optional] Add sudo support. Omit if you don't need to install software after connecting.
-    && apt-get update \
-    && apt-get install -y sudo \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
-
-# Install some dependencies as root
+# Base system dependencies
 RUN apt-get update && apt-get install -y \
-    wget \ 
-    build-essential \
-    python3.10 python3-pip python3.10-venv \
+    sudo \
+    curl \
     git \
+    build-essential \
     pkg-config \
-    libssl-dev && \
-    rm -rf /var/lib/apt/lists/*
+    libssl-dev \
+    python3 \
+    python3-venv \
+    python3-pip \
+    pipx \
+    ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
 
-# Switch to regular user
-USER $USERNAME
+# Give sudo access to the user without password
+RUN echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
+    && chmod 0440 /etc/sudoers.d/${USERNAME}
+
+USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
+# Environment variables
 ENV MULTIVERSX="/home/${USERNAME}/multiversx-sdk"
 ENV PATH="/home/${USERNAME}/.local/bin:${PATH}"
 ENV PATH="/home/${USERNAME}/.cargo/bin:${PATH}"
 
-# Install pipx
-RUN python3 -m pip install --no-cache-dir --user pipx
-
-# Install mxpy
+# Install mxpy via pipx
 RUN pipx install multiversx-sdk-cli==${VERSION_MXPY}
 
-# Install rust
-RUN wget -O rustup.sh https://sh.rustup.rs && \
-    chmod +x rustup.sh && \
-    CARGO_HOME=/home/${USERNAME}/.cargo RUSTUP_HOME=/home/${USERNAME}/.rustup ./rustup.sh --verbose --default-toolchain ${VERSION_RUST} --profile minimal -y && \
-    rm rustup.sh
+# Install Rust
+RUN curl https://sh.rustup.rs -sSf | \
+    sh -s -- -y --profile minimal --default-toolchain ${VERSION_RUST}
 
 # Install sc-meta tools
-RUN CARGO_HOME=/home/${USERNAME}/.cargo RUSTUP_HOME=/home/${USERNAME}/.rustup PATH="/home/${USERNAME}/.cargo/bin:${PATH}" \
-    cargo install multiversx-sc-meta --version ${VERSION_SC_META} --locked
-
-RUN CARGO_HOME=/home/${USERNAME}/.cargo RUSTUP_HOME=/home/${USERNAME}/.rustup PATH="/home/${USERNAME}/.cargo/bin:${PATH}" \
-    sc-meta install all
+RUN cargo install multiversx-sc-meta --version ${VERSION_SC_META} --locked \
+    && sc-meta install all
 
 # Install test wallets
-RUN mxpy deps install testwallets && rm ${MULTIVERSX}/*.tar.gz
+RUN mxpy deps install testwallets
 
-RUN rustup component add rustfmt && rm -rf /home/${USERNAME}/.cargo/registry/* && rm -rf /home/${USERNAME}/.cargo/git/*
+# Rust components + cleanup
+RUN rustup component add rustfmt \
+    && rm -rf /home/${USERNAME}/.cargo/registry \
+    && rm -rf /home/${USERNAME}/.cargo/git
 
-# This command will be executed once the devcontainer is created
-COPY "post_create_command.py" "${MULTIVERSX}/devcontainer-resources/"
+# Devcontainer resources
+COPY post_create_command.py ${MULTIVERSX}/devcontainer-resources/
+
+CMD ["bash"]
