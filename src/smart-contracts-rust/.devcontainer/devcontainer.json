@@ -34,5 +34,5 @@
 		}
 	},
 	"containerEnv": {},
-	"remoteUser": "developer"
+	"remoteUser": "ubuntu"
 }
