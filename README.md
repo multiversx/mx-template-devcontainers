@@ -59,7 +59,7 @@ Deploy a previously-built smart contract on Devnet:
 ${RUN} ${IMAGE} mxpy contract deploy \
     --bytecode /data/mx-contracts-rs/contracts/adder/output/adder.wasm \
     --arguments 0 \
-    --pem /home/developer/multiversx-sdk/testwallets/latest/users/alice.pem \
+    --pem /home/ubuntu/multiversx-sdk/testwallets/latest/users/alice.pem \
     --recall-nonce \
     --gas-limit 5000000 \
     --chain D \
@@ -74,7 +74,7 @@ ${RUN} ${IMAGE} mxpy contract call \
     erd1qqqqqqqqqqqqqpgqr3clh6ghpww5fc4uhwh2amsseuvecswzd8ssxu68s3 \
     --function "add" \
     --arguments 42 \
-    --pem /home/developer/multiversx-sdk/testwallets/latest/users/alice.pem \
+    --pem /home/ubuntu/multiversx-sdk/testwallets/latest/users/alice.pem \
     --recall-nonce \
     --gas-limit 5000000 \
     --chain D \
